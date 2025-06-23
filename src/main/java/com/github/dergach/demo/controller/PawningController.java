@@ -22,87 +22,105 @@ public class PawningController {
         this.categoryRepository = categoryRepository;
     }
 
-    @GetMapping("/pawning")
-    public String listPawning(Model model) {
-        model.addAttribute("pawnings", pawningRepository.findAll());
-        return "page/pawning";
+    @GetMapping("/pawnning")
+    public String listPawning(@RequestParam(required = false) String sort,
+                              @RequestParam(required = false) String search,
+                              Model model) {
+        Iterable<Pawning> pawnings;
+        String sortDirection = (sort != null && sort.equals("asc")) ? "asc" : "desc";
+
+        if (search != null && !search.isEmpty()) {
+            pawnings = pawningRepository.searchAcrossAllFields(search);
+        } else if ("asc".equals(sort)) {
+            pawnings = pawningRepository.findAllByOrderByPawningIdAsc();
+        } else if ("desc".equals(sort)) {
+            pawnings = pawningRepository.findAllByOrderByPawningIdDesc();
+        } else {
+            pawnings = pawningRepository.findAll();
+            sortDirection = "asc";
+        }
+
+        model.addAttribute("pawnings", pawnings);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("searchTerm", search);
+        return "page/pawnning";
     }
 
-    @GetMapping("/pawning/add")
+    @GetMapping("/pawnning/add")
     public String showAddPawning(Model model) {
         model.addAttribute("clients", clientRepository.findAll());
         model.addAttribute("categories", categoryRepository.findAll());
         return "page/pawning_add";
     }
 
-    @PostMapping("/pawning/add")
-    public String addPawning(@RequestParam Long client_id,
-                             @RequestParam Long category_id,
-                             @RequestParam String product_description,
-                             @RequestParam String date_received,
-                             @RequestParam String return_deadline,
+    @PostMapping("/pawnning/add")
+    public String addPawning(@RequestParam Long clientId,
+                             @RequestParam Long categoryId,
+                             @RequestParam String productDescription,
+                             @RequestParam String dateReceived,
+                             @RequestParam String returnDeadline,
                              @RequestParam String amount,
                              @RequestParam String commission) {
         try {
             Pawning p = new Pawning();
-            p.setClient(clientRepository.findById(client_id).orElseThrow());
-            p.setCategory(categoryRepository.findById(category_id).orElseThrow());
-            p.setProduct_description(product_description);
-            p.setDate_received(LocalDate.parse(date_received));
-            p.setReturn_deadline(LocalDate.parse(return_deadline));
+            p.setClient(clientRepository.findById(clientId).orElseThrow());
+            p.setCategory(categoryRepository.findById(categoryId).orElseThrow());
+            p.setProductDescription(productDescription);
+            p.setDateReceived(LocalDate.parse(dateReceived));
+            p.setReturnDeadline(LocalDate.parse(returnDeadline));
             p.setAmount(new BigDecimal(amount));
             p.setCommission(new BigDecimal(commission));
             pawningRepository.save(p);
-            return "redirect:/pawning";
+            return "redirect:/pawnning";
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/pawning";
+            return "redirect:/pawnning";
         }
     }
 
-    @GetMapping("/pawning/edit")
-    public String showEditPawning(@RequestParam Long pawning_id, Model model) {
-        var p = pawningRepository.findById(pawning_id).orElseThrow();
+    @GetMapping("/pawnning/edit")
+    public String showEditPawning(@RequestParam Long pawningId, Model model) {
+        var p = pawningRepository.findById(pawningId).orElseThrow();
         model.addAttribute("pawning", p);
         model.addAttribute("clients", clientRepository.findAll());
         model.addAttribute("categories", categoryRepository.findAll());
         return "page/pawning_edit";
     }
 
-    @PostMapping("/pawning/edit")
-    public String editPawning(@RequestParam Long pawning_id,
-                              @RequestParam Long client_id,
-                              @RequestParam Long category_id,
-                              @RequestParam String product_description,
-                              @RequestParam String date_received,
-                              @RequestParam String return_deadline,
+    @PostMapping("/pawnning/edit")
+    public String editPawning(@RequestParam Long pawningId,
+                              @RequestParam Long clientId,
+                              @RequestParam Long categoryId,
+                              @RequestParam String productDescription,
+                              @RequestParam String dateReceived,
+                              @RequestParam String returnDeadline,
                               @RequestParam String amount,
                               @RequestParam String commission) {
         try {
-            Pawning p = pawningRepository.findById(pawning_id).orElseThrow();
-            p.setClient(clientRepository.findById(client_id).orElseThrow());
-            p.setCategory(categoryRepository.findById(category_id).orElseThrow());
-            p.setProduct_description(product_description);
-            p.setDate_received(LocalDate.parse(date_received));
-            p.setReturn_deadline(LocalDate.parse(return_deadline));
+            Pawning p = pawningRepository.findById(pawningId).orElseThrow();
+            p.setClient(clientRepository.findById(clientId).orElseThrow());
+            p.setCategory(categoryRepository.findById(categoryId).orElseThrow());
+            p.setProductDescription(productDescription);
+            p.setDateReceived(LocalDate.parse(dateReceived));
+            p.setReturnDeadline(LocalDate.parse(returnDeadline));
             p.setAmount(new BigDecimal(amount));
             p.setCommission(new BigDecimal(commission));
             pawningRepository.save(p);
-            return "redirect:/pawning";
+            return "redirect:/pawnning";
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/pawning";
+            return "redirect:/pawnning";
         }
     }
 
-    @GetMapping("/pawning/delete")
-    public String deletePawning(@RequestParam Long pawning_id) {
+    @GetMapping("/pawnning/delete")
+    public String deletePawning(@RequestParam Long pawningId) {
         try {
-            pawningRepository.deleteById(pawning_id);
-            return "redirect:/pawning";
+            pawningRepository.deleteById(pawningId);
+            return "redirect:/pawnning";
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/pawning";
+            return "redirect:/pawnning";
         }
     }
 }

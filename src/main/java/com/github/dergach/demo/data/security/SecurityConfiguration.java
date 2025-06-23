@@ -29,6 +29,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/categories/**").hasAnyAuthority("USER","ADMIN")
                         .requestMatchers("/categories/").hasAnyAuthority("USER","ADMIN")
                         .requestMatchers("/pawning/**").hasAnyAuthority("USER","ADMIN")
+                        .requestMatchers("/pawnning/**").hasAnyAuthority("USER","ADMIN")
                         .requestMatchers("/clients/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/categories/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()

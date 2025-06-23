@@ -1,46 +1,50 @@
-@import com.github.dergach.demo.data.entitys.ProductCategory
+@import com.github.dergach.demo.data.entitys.Pawning
 @import java.util.List
-@param List<ProductCategory> categories
+@param List<Pawning> pawnings
 @param String sortDirection
 @param String searchTerm
 
 @template.layout.main(
 content = @`
     <div class="container">
-        <h2>Product Categories</h2>
-        <a href="/categories/add" class="btn-add">Add New Category</a>
+        <h2>Pawnings List</h2>
+        <a href="/pawning/add" class="btn-add">Add New Pawning</a>
         <div class="sort-container">
             <span class="sort-label">Sort by ID:</span>
-            <a href="/categories?sort=${sortDirection == "asc" ? "desc" : "asc"}" class="btn-sort">
+            <a href="/pawning?sort=${sortDirection == "asc" ? "desc" : "asc"}" class="btn-sort">
                 ${sortDirection == "asc" ? "▼ Descending" : "▲ Ascending"}
             </a>
         </div>
         <div class="search-container">
-            <form action="/categories" method="get">
+            <form action="/pawning" method="get">
                 <input type="text" name="search" placeholder="Search across all fields..."
                        value="${searchTerm != null ? searchTerm : ""}">
                 <button type="submit" class="btn-search">Search</button>
-                <a href="/categories" class="btn-clear">Clear</a>
+                <a href="/pawning" class="btn-clear">Clear</a>
             </form>
         </div>
         <table class="data-table">
             <thead>
             <tr>
                 <th>ID</th>
-                <th>Name</th>
-                <th>Notes</th>
+                <th>Client</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Amount</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            @for(ProductCategory category : categories)
+            @for(Pawning pawning : pawnings)
                 <tr>
-                    <td>${category.getCategoryId()}</td>
-                    <td>${category.getName()}</td>
-                    <td>${category.getNotes()}</td>
+                    <td>${pawning.getPawningId()}</td>
+                    <td>${pawning.getClient().getLastName()} ${pawning.getClient().getFirstName()}</td>
+                    <td>${pawning.getCategory().getName()}</td>
+                    <td>${pawning.getProductDescription()}</td>
+                    <td>${pawning.getAmount()}</td>
                     <td>
-                        <a href="/categories/edit?categoryId=${category.getCategoryId()}" class="btn-edit">Edit</a>
-                        <a href="/categories/delete?categoryId=${category.getCategoryId()}" class="btn-delete" onclick="return confirm('Are you sure?')">Delete</a>
+                        <a href="/pawning/edit?pawningId=${pawning.getPawningId()}" class="btn-edit">Edit</a>
+                        <a href="/pawning/delete?pawningId=${pawning.getPawningId()}" class="btn-delete" onclick="return confirm('Are you sure?')">Delete</a>
                     </td>
                 </tr>
             @endfor
@@ -50,6 +54,7 @@ content = @`
 `,
 headContent = @`
     <style>
+        /* Тут такий самий стиль як у categories.html */
         .container {
             max-width: 1200px;
             margin: 0 auto;

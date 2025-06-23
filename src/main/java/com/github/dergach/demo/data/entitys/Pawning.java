@@ -1,4 +1,5 @@
 package com.github.dergach.demo.data.entitys;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +16,8 @@ public class Pawning {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pawning_id;
+    @Column(name = "pawning_id")
+    private Long pawningId;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
@@ -27,14 +29,14 @@ public class Pawning {
     @ToString.Exclude
     private Client client;
 
-    @Column(nullable = false)
-    private String product_description;
+    @Column(name = "product_description", nullable = false)
+    private String productDescription;
 
-    @Column(nullable = false)
-    private LocalDate date_received;
+    @Column(name = "date_received", nullable = false)
+    private LocalDate dateReceived;
 
-    @Column(nullable = false)
-    private LocalDate return_deadline;
+    @Column(name = "return_deadline", nullable = false)
+    private LocalDate returnDeadline;
 
     @Column(nullable = false)
     private BigDecimal amount;

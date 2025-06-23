@@ -38,10 +38,10 @@
 <body>
 <h1>Welcome to My Website</h1>
 <div class="navigation">
-    <a href="client">Client</a>
-    <a href="client/add">Add client</a>
-    <a href="pawning">Pawning</a>
-    <a href="pawning/add">Add pawning</a>
+    <a href="clients">Client</a>
+    <a href="clients/add">Add client</a>
+    <a href="pawnning">Pawning</a>
+    <a href="pawnning/add">Add pawning</a>
 
     <a href="categories">Product category</a>
     <a href="categories/add">Add product category</a>

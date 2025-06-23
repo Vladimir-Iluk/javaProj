@@ -1,6 +1,5 @@
 package com.github.dergach.demo.data.entitys;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +13,8 @@ public class ProductCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long category_id;
+    @Column(name = "category_id")
+    private Long categoryId;
 
     @Column(nullable = false)
     private String name;

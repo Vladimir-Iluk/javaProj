@@ -15,8 +15,26 @@ public class ProductCategoryController {
     }
 
     @GetMapping("/categories")
-    public String listCategories(Model model) {
-        model.addAttribute("categories", categoryRepository.findAll());
+    public String listCategories(@RequestParam(required = false) String sort,
+                                 @RequestParam(required = false) String search,
+                                 Model model) {
+        Iterable<ProductCategory> categories;
+        String sortDirection = (sort != null && sort.equals("asc")) ? "asc" : "desc";
+
+        if (search != null && !search.isEmpty()) {
+            categories = categoryRepository.searchAcrossAllFields(search);
+        } else if ("asc".equals(sort)) {
+            categories = categoryRepository.findAllByOrderByCategoryIdAsc();
+        } else if ("desc".equals(sort)) {
+            categories = categoryRepository.findAllByOrderByCategoryIdDesc();
+        } else {
+            categories = categoryRepository.findAll();
+            sortDirection = "asc";
+        }
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("searchTerm", search);
         return "page/categories";
     }
 
@@ -41,18 +59,18 @@ public class ProductCategoryController {
     }
 
     @GetMapping("/categories/edit")
-    public String showEditCategory(@RequestParam Long category_id, Model model) {
-        var category = categoryRepository.findById(category_id).orElseThrow();
+    public String showEditCategory(@RequestParam Long categoryId, Model model) {
+        var category = categoryRepository.findById(categoryId).orElseThrow();
         model.addAttribute("category", category);
         return "page/category_edit";
     }
 
     @PostMapping("/categories/edit")
-    public String editCategory(@RequestParam Long category_id,
+    public String editCategory(@RequestParam Long categoryId,
                                @RequestParam String name,
                                @RequestParam(required = false) String notes) {
         try {
-            ProductCategory category = categoryRepository.findById(category_id).orElseThrow();
+            ProductCategory category = categoryRepository.findById(categoryId).orElseThrow();
             category.setName(name);
             category.setNotes(notes);
             categoryRepository.save(category);
@@ -64,9 +82,9 @@ public class ProductCategoryController {
     }
 
     @GetMapping("/categories/delete")
-    public String deleteCategory(@RequestParam Long category_id) {
+    public String deleteCategory(@RequestParam Long categoryId) {
         try {
-            categoryRepository.deleteById(category_id);
+            categoryRepository.deleteById(categoryId);
             return "redirect:/categories";
         } catch (Exception e) {
             e.printStackTrace();

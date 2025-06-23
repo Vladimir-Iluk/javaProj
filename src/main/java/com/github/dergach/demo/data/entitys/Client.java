@@ -14,23 +14,24 @@ public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long client_id;
+    @Column(name = "client_id")
+    private Long clientId;
 
-    @Column(nullable = false)
-    private String last_name;
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
 
-    @Column(nullable = false)
-    private String first_name;
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
 
     @Column
     private String patronymic;
 
-    @Column(nullable = false)
-    private String passport_number;
+    @Column(name = "passport_number", nullable = false)
+    private String passportNumber;
 
-    @Column(nullable = false)
-    private String passport_series;
+    @Column(name = "passport_series", nullable = false)
+    private String passportSeries;
 
-    @Column(nullable = false)
-    private LocalDate passport_issued_date;
+    @Column(name = "passport_issued_date", nullable = false)
+    private LocalDate passportIssuedDate;
 }

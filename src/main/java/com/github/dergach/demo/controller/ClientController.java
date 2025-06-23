@@ -15,8 +15,28 @@ public class ClientController {
     }
 
     @GetMapping("/clients")
-    public String listClients(Model model) {
-        model.addAttribute("clients", clientRepository.findAll());
+    public String listClients(
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String search,
+            Model model) {
+
+        Iterable<Client> clients;
+        String sortDirection = (sort != null && sort.equals("asc")) ? "asc" : "desc";
+
+        if (search != null && !search.isEmpty()) {
+            clients = clientRepository.searchAcrossAllFields(search);
+        } else if ("asc".equals(sort)) {
+            clients = clientRepository.findAllByOrderByClientIdAsc();
+        } else if ("desc".equals(sort)) {
+            clients = clientRepository.findAllByOrderByClientIdDesc();
+        } else {
+            clients = clientRepository.findAll();
+            sortDirection = "asc";
+        }
+
+        model.addAttribute("clients", clients);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("searchTerm", search);
         return "page/clients";
     }
 
@@ -26,20 +46,20 @@ public class ClientController {
     }
 
     @PostMapping("/clients/add")
-    public String addClient(@RequestParam String last_name,
-                            @RequestParam String first_name,
+    public String addClient(@RequestParam String lastName,
+                            @RequestParam String firstName,
                             @RequestParam String patronymic,
-                            @RequestParam String passport_number,
-                            @RequestParam String passport_series,
-                            @RequestParam String passport_issued_date) {
+                            @RequestParam String passportNumber,
+                            @RequestParam String passportSeries,
+                            @RequestParam String passportIssuedDate) {
         try {
             Client client = new Client();
-            client.setLast_name(last_name);
-            client.setFirst_name(first_name);
+            client.setLastName(lastName);
+            client.setFirstName(firstName);
             client.setPatronymic(patronymic);
-            client.setPassport_number(passport_number);
-            client.setPassport_series(passport_series);
-            client.setPassport_issued_date(java.time.LocalDate.parse(passport_issued_date));
+            client.setPassportNumber(passportNumber);
+            client.setPassportSeries(passportSeries);
+            client.setPassportIssuedDate(java.time.LocalDate.parse(passportIssuedDate));
             clientRepository.save(client);
             return "redirect:/clients";
         } catch (Exception e) {
@@ -49,28 +69,28 @@ public class ClientController {
     }
 
     @GetMapping("/clients/edit")
-    public String showEditClient(@RequestParam Long client_id, Model model) {
-        var client = clientRepository.findById(client_id).orElseThrow();
+    public String showEditClient(@RequestParam Long clientId, Model model) {
+        var client = clientRepository.findById(clientId).orElseThrow();
         model.addAttribute("client", client);
         return "page/client_edit";
     }
 
     @PostMapping("/clients/edit")
-    public String editClient(@RequestParam Long client_id,
-                             @RequestParam String last_name,
-                             @RequestParam String first_name,
+    public String editClient(@RequestParam Long clientId,
+                             @RequestParam String lastName,
+                             @RequestParam String firstName,
                              @RequestParam String patronymic,
-                             @RequestParam String passport_number,
-                             @RequestParam String passport_series,
-                             @RequestParam String passport_issued_date) {
+                             @RequestParam String passportNumber,
+                             @RequestParam String passportSeries,
+                             @RequestParam String passportIssuedDate) {
         try {
-            Client client = clientRepository.findById(client_id).orElseThrow();
-            client.setLast_name(last_name);
-            client.setFirst_name(first_name);
+            Client client = new Client();
+            client.setLastName(lastName);
+            client.setFirstName(firstName);
             client.setPatronymic(patronymic);
-            client.setPassport_number(passport_number);
-            client.setPassport_series(passport_series);
-            client.setPassport_issued_date(java.time.LocalDate.parse(passport_issued_date));
+            client.setPassportNumber(passportNumber);
+            client.setPassportSeries(passportSeries);
+            client.setPassportIssuedDate(java.time.LocalDate.parse(passportIssuedDate));
             clientRepository.save(client);
             return "redirect:/clients";
         } catch (Exception e) {
@@ -80,9 +100,9 @@ public class ClientController {
     }
 
     @GetMapping("/clients/delete")
-    public String deleteClient(@RequestParam Long client_id) {
+    public String deleteClient(@RequestParam Long clientId) {
         try {
-            clientRepository.deleteById(client_id);
+            clientRepository.deleteById(clientId);
             return "redirect:/clients";
         } catch (Exception e) {
             e.printStackTrace();
