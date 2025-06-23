@@ -1,4 +1,6 @@
 package com.github.dergach.demo.data.entitys;
 
-public interface PawningRepository {
+import org.springframework.data.repository.CrudRepository;
+
+public interface PawningRepository extends CrudRepository<Pawning, Long> {
 }

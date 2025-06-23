@@ -1,4 +1,6 @@
 package com.github.dergach.demo.data.entitys;
 
-public class ClientRepository {
+import org.springframework.data.repository.CrudRepository;
+
+public interface ClientRepository extends CrudRepository<Client, Long> {
 }

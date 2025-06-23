@@ -1,4 +1,6 @@
 package com.github.dergach.demo.data.entitys;
 
-public class Product {
+import org.springframework.data.repository.CrudRepository;
+
+public interface ProductCategoryRepository extends CrudRepository<ProductCategory, Long> {
 }

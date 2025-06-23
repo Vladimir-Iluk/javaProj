@@ -1,4 +1,4 @@
 package com.github.dergach.demo.data.user;
 
-public class PlatformUserRequest {
+public record PlatformUserRequest(String username, String password, Role role) {
 }
